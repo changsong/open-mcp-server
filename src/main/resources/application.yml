@@ -1,0 +1,53 @@
+jina:
+  api:
+    api-key: jina_7c2096090ce14586ab4193e376588eeat9lPKEeomlMin_lONzpwnPsUHf7d
+spring:
+  application:
+    name: open-mcp-server
+  ai:
+    mcp:
+      server:
+        name: ${spring.application.name}
+        version: 0.0.1
+        stdio: false
+        sse:
+          enabled: true
+          path: /sse
+          heartbeat-interval: 15000
+          connection-timeout: -1
+
+  main:
+    banner-mode: off
+    web-application-type: servlet
+
+  mvc:
+    async:
+      request-timeout: -1
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) --- [%15.15t] %cyan(%-40.40logger{39}) : %msg%n"
+  file:
+    name: D://${spring.application.name}.log
+  level:
+    org.springframework.web: DEBUG
+    com.open.mcp.server: DEBUG
+
+server:
+  port: 8080
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
+  tomcat:
+    connection-timeout: -1
+    keep-alive-timeout: 120000
+    max-keep-alive-requests: 10000
+    threads:
+      max: 200
+      min-spare: 10
+    accept-count: 100
+    max-connections: 8192
+    connection-lingers: 5
+    socket-buffer-pool: true
