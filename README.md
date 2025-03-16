@@ -1,5 +1,7 @@
 # Open MCP Server
 
+[**中文版**](https://github.com/changsong/open-mcp-server/blob/master/README_CN.md)
+
 Open-MCP-Server is a service framework supporting the Model Context Protocol (MCP), designed to streamline integration between your systems and AI platforms while providing business data to AI systems. It natively supports integration with various open APIs, internal system APIs, Dubbo interfaces, and other protocols, empowering your AI systems to address customized requirements.
 
 Key features include:
