@@ -4,7 +4,7 @@ A Model Context Protocol (MCP)  for numerous third-party software and third-part
 Once deployed, this service can offer enhanced support for your AI platform, such as enabling you to use Dofi to complete your platform
 
 ### Supported Third-party APIs
-
+[juehe data](https://www.juhe.cn/)
 
 ### Supported Third-party Software
 

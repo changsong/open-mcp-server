@@ -1,6 +1,6 @@
 package com.open.mcp.server;
 
-import com.open.mcp.server.service.JinaService;
+import com.open.mcp.server.service.NewsService;
 import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.tool.method.MethodToolCallbackProvider;
 import org.springframework.boot.SpringApplication;
@@ -22,9 +22,8 @@ public class OpenMcpServer {
     }
 
     @Bean
-    public ToolCallbackProvider jinaSearchTools(JinaService jinaService) {
-        return MethodToolCallbackProvider.builder().toolObjects(jinaService).build();
+    public ToolCallbackProvider cxOrderServiceTools(NewsService newsService) {
+        return MethodToolCallbackProvider.builder().toolObjects(newsService).build();
     }
-
 
 }

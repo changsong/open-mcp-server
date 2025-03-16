@@ -1,0 +1,90 @@
+# 项目背景
+采购订单管理系统(Purchase Order Management System),这是一个企业级采购订单管理系统，主要用于处理门店、总部和仓库的订货业务。
+系统支持多种订单类型，包括普通订单、加急订单、团购订单等，并提供订单标识、商品标记等功能。
+
+# 技术架构
+##整体架构
+基于 Java 8 开发的多模块 Maven 项目,基于SpringMVC 4.3.14.RELEASE 开发的项目
+## 采用分层架构:
+Web 层 (pm-web)
+Service 层 (pm-service)
+Business 层 (pm-biz)
+Domain 层 (pm-domain)
+DAO 层 (pm-dao)
+
+##核心技术栈
+Spring Framework
+MyBatis
+Redis
+FastJSON
+RDP(内部配置中心)
+自研的路由注解框架(@CxRouter)
+
+## 目录结构
+pm/
+├── pm-web/           # Web层，处理HTTP请求
+├── pm-service/       # 服务层，业务逻辑封装
+├── pm-biz/           # 业务层，核心业务处理
+├── pm-domain/        # 领域层，领域模型
+├── pm-dao/           # 数据访问层
+├── pm-job-web/       # 业务层，核心业务处理
+├── pm-po-engine/     # 订单引擎
+├── pm-rpc/           # RPC接口
+├── pm-biz/           # 业务层，核心业务处理
+└── pm-web/           # 前端页码
+
+
+## 灵活的订单处理流程
+采用责任链模式处理订单
+支持订单预校验、构建、发布等完整生命周期
+
+## 配置中心集成
+通过 RDP 配置中心实现业务规则的动态配置
+支持商家级别的配置隔离
+
+## 核心方法说明
+### 订单处理
+#### 订单构建
+CxPoBuildBean.builds() - 构建订单
+CxPoBuildBean.NewDefaultPo.newDefaultPo() - 创建默认订单
+#### 业务标识处理
+CxBusinessTagHandler.handle() - 处理订单业务标识
+CxBusinessTagSetter.sets() - 设置订单业务标识
+
+#### 订单校验
+
+## 扩展性设计
+- 采用 JSON 扩展字段支持业务属性的动态扩展
+- 使用策略模式支持不同类型订单的差异化处理
+- 这个系统的核心是订单处理流程，通过分层架构和设计模式的合理运用，实现了高扩展性和可维护性。
+- CxMinQuantityPoPreBO.minQuantityPOPreCheck() - 订单预校验
+- CxMinQuantityPoPreBO.publishBusinessTagCheck() - 业务标识校验
+
+# 特色功能
+## 多商家支持
+通过 @CxRouter 注解实现不同商家的个性化处理
+
+## 灵活的订单处理流程
+- 采用责任链模式处理订单
+- 支持订单预校验、构建、发布等完整生命周期
+
+## 配置中心集成
+- 通过 RDP 配置中心实现业务规则的动态配置
+- 支持商家级别的配置隔离
+
+## 扩展性设计
+- 采用 JSON 扩展字段支持业务属性的动态扩展
+- 使用策略模式支持不同类型订单的差异化处理
+
+这个系统的核心是订单处理流程，通过分层架构和设计模式的合理运用，实现了高扩展性和可维护性。
+
+#代码规范
+
+## 命名规范
+- 组件使用大驼峰命名法(PascalCase)
+- 遵循Java的命名规范
+- 工具函数使用小驼峰命名法(camelCase)
+- 文件夹/件名使用小写字母,单词用中划线分隔
+
+# Git提交规范
+${type}:${emoji}${description}

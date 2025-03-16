@@ -1,6 +1,6 @@
 package com.open.mcp.server.config;
 
-import com.open.mcp.server.service.IJinaReaderApi;
+import com.open.mcp.server.service.NewsApi;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -20,38 +20,36 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Configuration
 public class Retrofit2Config {
 
-    @Value("${jina.api.api-key}")
-    private String jinaApiKey;
+    @Value("${news.api.key}")
+    private String newApiKey;
+
 
     @Bean
-    public IJinaReaderApi jinaSearchApi() {
-
+    public NewsApi newsApi() {
         // 创建日志拦截器
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY); // 设置日志级别
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         // 添加统一请求头拦截器
         Interceptor headerInterceptor = chain -> {
             Request originalRequest = chain.request();
             Request newRequest = originalRequest.newBuilder()
-                    .header("Authorization", "Bearer " + jinaApiKey)
+                    .header("Authorization", "Bearer " + newApiKey)
                     .build();
             return chain.proceed(newRequest);
         };
 
         // 创建OkHttpClient并添加日志拦截器
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
-//                .addInterceptor(loggingInterceptor)
-                .addInterceptor(headerInterceptor)
+                .addInterceptor(loggingInterceptor)
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://r.jina.ai")
+                .baseUrl("http://vj.uhc.cn/")
                 .client(okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create()).build();
-        return retrofit.create(IJinaReaderApi.class);
-
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        return retrofit.create(NewsApi.class);
     }
-
 
 }
