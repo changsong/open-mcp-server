@@ -23,7 +23,7 @@ public class NewsService {
     @Resource
     private NewsApi newsApi;
 
-    @Value("${news.api.key}")
+    @Value("${juhe.news.apikey}")
     private String apiKey;
 
     @Tool(description = "获取新闻列表")

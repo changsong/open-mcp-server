@@ -20,24 +20,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Configuration
 public class Retrofit2Config {
 
-    @Value("${juhe.news.apikey}")
-    private String newApiKey;
-
-
     @Bean
     public NewsApi newsApi() {
         // 创建日志拦截器
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-        // 添加统一请求头拦截器
-        Interceptor headerInterceptor = chain -> {
-            Request originalRequest = chain.request();
-            Request newRequest = originalRequest.newBuilder()
-                    .header("Authorization", "Bearer " + newApiKey)
-                    .build();
-            return chain.proceed(newRequest);
-        };
 
         // 创建OkHttpClient并添加日志拦截器
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
