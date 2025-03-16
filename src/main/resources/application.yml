@@ -55,3 +55,4 @@ server:
 juhe:
   news:
     apikey: ac76f74686e48281df973daadf096c48
+    baseUrl: http://v.juhe.cn

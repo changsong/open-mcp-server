@@ -1,9 +1,7 @@
 package com.open.mcp.server.config;
 
 import com.open.mcp.server.service.NewsApi;
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +18,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Configuration
 public class Retrofit2Config {
 
+
+    @Value("${juhe.news.baseUrl}")
+    private String baseUrl;
+
+
     @Bean
     public NewsApi newsApi() {
         // 创建日志拦截器
@@ -32,7 +35,7 @@ public class Retrofit2Config {
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://vj.uhc.cn/")
+                .baseUrl(baseUrl)
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
