@@ -1,18 +1,24 @@
 # Open MCP Server
 
-A Model Context Protocol (MCP)  for numerous third-party software and third-party APIs. 
-Once deployed, this service can offer enhanced support for your AI platform, such as enabling you to use Dofi to complete your platform
+Open-MCP-Server is a service framework supporting the Model Context Protocol (MCP), designed to streamline integration between your systems and AI platforms while providing business data to AI systems. It natively supports integration with various open APIs, internal system APIs, Dubbo interfaces, and other protocols, empowering your AI systems to address customized requirements.
+
+Key features include:
+
+- Unified adaptation of public/private APIs (including RESTful, gRPC, Dubbo)
+
+- Context-aware data orchestration for AI workflows
+
+- Extensible architecture for bespoke business logic
+
+- This enables tailored AI solutions while maintaining compatibility with heterogeneous systems.
+
+If you require integration with other public APIs or software systems, please contact me.
 
 ### Supported Third-party APIs
 [juehe data](https://www.juhe.cn/)
 
-### Supported Third-party Software
-
 
 ### Waitlist for New Third-party APIs 
-
-
-### Waitlist for New Third-party Software
 
 ## Configuration
 
@@ -24,7 +30,7 @@ Once deployed, this service can offer enhanced support for your AI platform, suc
         "-Dspring.ai.mcp.server.stdio=true",
         "-jar",
         "/the path of the jar/open-mcp-server-1.0-SNAPSHOT.jar",
-        "jina.api.api-key= Your jina key"
+        "juhe.news.api-key= Your juhe key"
       ]
     }
 }

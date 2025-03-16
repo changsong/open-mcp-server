@@ -20,7 +20,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Configuration
 public class Retrofit2Config {
 
-    @Value("${news.api.key}")
+    @Value("${juhe.news.apikey}")
     private String newApiKey;
 
 

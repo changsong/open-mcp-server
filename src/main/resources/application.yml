@@ -1,12 +1,3 @@
-jina:
-  api:
-    api-key: jina_7c2096090ce14586ab4193e376588eeat9lPKEeomlMin_lONzpwnPsUHf7d
-news:
-  api:
-    key: your_news_api_key_here
-cx:
-  order:
-    cookie: ""
 spring:
   application:
     name: open-mcp-server
@@ -25,7 +16,6 @@ spring:
           path: /sse
           heartbeat-interval: 15000
           connection-timeout: 300000  # 5分钟超时
-
   mvc:
     async:
       request-timeout: 300000  # 5分钟超时
@@ -61,3 +51,7 @@ server:
     remoteip:
       remote-ip-header: X-Forwarded-For
       protocol-header: X-Forwarded-Proto
+
+juhe:
+  news:
+    apikey: ac76f74686e48281df973daadf096c48
