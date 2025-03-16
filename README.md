@@ -1,6 +1,6 @@
 # Open MCP Server
 
-[**ENGLISH VERSION**](https://github.com/changsong/open-mcp-server/blob/master/README_EN.md)
+[**English Version**](https://github.com/changsong/open-mcp-server/blob/master/README_EN.md)
 
 Open-MCP-Server 是一个支持模型上下文协议（Model Context Protocol, MCP）的服务框架，旨在简化企业系统与AI平台的集成，同时为AI系统提供业务数据支持。本框架原生兼容各类开放API、内部系统API、Dubbo接口等多协议接入，赋能AI系统实现定制化需求。
 
