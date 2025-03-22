@@ -1,6 +1,7 @@
 package com.open.mcp.server;
 
 import com.open.mcp.server.service.NewsService;
+import com.open.mcp.server.service.VideoService;
 import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.tool.method.MethodToolCallbackProvider;
 import org.springframework.boot.SpringApplication;
@@ -22,8 +23,10 @@ public class OpenMcpServer {
     }
 
     @Bean
-    public ToolCallbackProvider cxOrderServiceTools(NewsService newsService) {
-        return MethodToolCallbackProvider.builder().toolObjects(newsService).build();
+    public ToolCallbackProvider toolCallbackProvider(NewsService newsService, VideoService videoService) {
+        return MethodToolCallbackProvider.builder()
+                .toolObjects(newsService, videoService)
+                .build();
     }
 
 }
