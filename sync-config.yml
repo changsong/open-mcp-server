@@ -1,0 +1,11 @@
+repositories:
+  - name: "open-mcp-server"
+    gitee:
+      # Gitee 
+      repo_url: "https://gitee.com/changsong/open-mcp-server.git"
+      branch: "main"
+    github:
+      # GitHub
+      repo_name: "open-mcp-server"
+      branch: "main"
+      private: false

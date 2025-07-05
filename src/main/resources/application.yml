@@ -1,0 +1,88 @@
+spring:
+  application:
+    name: open-mcp-server
+  main:
+    banner-mode: off
+    web-application-type: servlet
+    allow-bean-definition-overriding: true
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration
+  messages:
+    basename: messages
+    encoding: UTF-8
+    fallback-to-system-locale: true
+    always-use-message-format: true
+    use-code-as-default-message: true
+    cache-duration: 3600
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/chatgpt?useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: abc123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  ai:
+    azure:
+      openai:
+        api-key: 4feae27698154a338b7ae24b9d589095
+        endpoint: https://gnkb-gpt4-eu2.openai.azure.com
+        chat:
+          options:
+            deployment-name: gpt4o-eu2-gnkb
+        embedding:
+          enabled: true
+      mcp:
+        server:
+          name: ${spring.application.name}
+          version: 0.0.1
+          stdio: false
+          sse:
+            enabled: true
+            path: /sse
+            heartbeat-interval: 15000
+            connection-timeout: 300000  # 5分钟超时
+  mvc:
+    async:
+      request-timeout: 300000  # 5分钟超时
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) --- [%15.15t] %cyan(%-40.40logger{39}) : %msg%n"
+  file:
+    name: D://${spring.application.name}.log
+  level:
+    org.springframework.web: INFO
+    com.open.mcp.server: DEBUG
+    io.modelcontextprotocol.server.transport: INFO
+
+server:
+  port: 8080
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
+  tomcat:
+    connection-timeout: 20000  # 20秒连接超时
+    keep-alive-timeout: 120000  # 2分钟keep-alive超时
+    max-keep-alive-requests: 10000
+    threads:
+      max: 200
+      min-spare: 10
+    accept-count: 100
+    max-connections: 8192
+    connection-lingers: 5
+    socket-buffer-pool: true
+    remoteip:
+      remote-ip-header: X-Forwarded-For
+      protocol-header: X-Forwarded-Proto
+
+juhe:
+  news:
+    apikey: ac76f74686e48281df973daadf096c48
+    baseUrl: http://v.juhe.cn
+  video:
+    apikey: ${juhe.news.apikey}
+    baseUrl: ${juhe.news.baseUrl}
+
+
+

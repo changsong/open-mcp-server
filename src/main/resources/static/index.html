@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>MCP Interface Migration Tool</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+    <script src="i18n/en.js"></script>
+    <script src="i18n/zh.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        success: '#10b981',
+                        warning: '#f59e0b',
+                        error: '#ef4444'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 100px;
+            font-family: monospace;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        .language-selector {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+        .language-selector button {
+            background-color: #666;
+            margin-left: 10px;
+        }
+        .language-selector button.active {
+            background-color: #4CAF50;
+        }
+        .json-textarea {
+            font-family: monospace;
+            height: 100px;
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-bottom: 5px;
+        }
+        .button-group {
+            margin-bottom: 15px;
+        }
+        .test-result {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .url-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .method-select {
+            width: 100px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+        }
+        .url-input {
+            flex: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div id="app" class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- 语言选择器 -->
+        <div class="flex justify-end space-x-2 mb-8">
+            <button @click="setLanguage('zh')" 
+                    :class="['px-4 py-2 rounded-lg transition-colors duration-200', 
+                            currentLang === 'zh' ? 'bg-primary text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300']">
+                中文
+            </button>
+            <button @click="setLanguage('en')"
+                    :class="['px-4 py-2 rounded-lg transition-colors duration-200',
+                            currentLang === 'en' ? 'bg-primary text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300']">
+                English
+            </button>
+        </div>
+
+        <!-- 主容器 -->
+        <div class="bg-white rounded-2xl shadow-lg p-8">
+            <h1 class="text-3xl font-bold text-gray-800 text-center mb-8">{{ i18n.title }}</h1>
+
+            <!-- API URL 表单组 -->
+            <div class="space-y-6">
+                <div class="space-y-4">
+                    <label class="block text-sm font-medium text-gray-700">{{ i18n.apiUrl.label }}</label>
+                    <div class="flex space-x-4">
+                        <select v-model="method" 
+                                class="w-32 rounded-lg border-gray-300 shadow-sm focus:border-primary focus:ring-primary">
+                            <option value="GET">GET</option>
+                            <option value="POST">POST</option>
+                            <option value="PUT">PUT</option>
+                            <option value="DELETE">DELETE</option>
+                        </select>
+                        <input type="text" v-model="apiUrl" :placeholder="i18n.apiUrl.placeholder"
+                               class="flex-1 rounded-lg border-gray-300 shadow-sm focus:border-primary focus:ring-primary">
+                    </div>
+                    <div class="flex space-x-4">
+                        <button @click="testApi" 
+                                class="px-6 py-2 bg-success text-white rounded-lg hover:bg-success/90 transition-colors duration-200 flex-1">
+                            {{ i18n.buttons.test }}
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Cookie 输入 -->
+                <div class="space-y-4">
+                    <label class="block text-sm font-medium text-gray-700">{{ i18n.cookie.label }}</label>
+                    <textarea v-model="cookie" :placeholder="i18n.cookie.placeholder"
+                              class="w-full h-32 rounded-lg border-gray-300 shadow-sm focus:border-primary focus:ring-primary font-mono text-sm"></textarea>
+                    <button @click="formatJson('cookie')" 
+                            class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200">
+                        {{ i18n.buttons.formatJson }}
+                    </button>
+                </div>
+
+                <!-- 请求数据输入 -->
+                <div class="space-y-4">
+                    <label class="block text-sm font-medium text-gray-700">{{ i18n.requestData.label }}</label>
+                    <textarea v-model="requestData" :placeholder="i18n.requestData.placeholder"
+                              class="w-full h-32 rounded-lg border-gray-300 shadow-sm focus:border-primary focus:ring-primary font-mono text-sm"></textarea>
+                    <button @click="formatJson('requestData')"
+                            class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200">
+                        {{ i18n.buttons.formatJson }}
+                    </button>
+                </div>
+
+                <!-- 测试结果 -->
+                <div v-if="testResult" class="space-y-4 p-6 bg-gray-50 rounded-lg border border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900">{{ i18n.test.title }}</h3>
+                    <pre class="bg-white p-4 rounded-lg overflow-x-auto font-mono text-sm">{{ testResult }}</pre>
+                    <button @click="useTestResult"
+                            class="px-6 py-2 bg-success text-white rounded-lg hover:bg-success/90 transition-colors duration-200">
+                        {{ i18n.buttons.useTestResult }}
+                    </button>
+                </div>
+
+                <!-- 包路径输入 -->
+                <div class="space-y-4">
+                    <label class="block text-sm font-medium text-gray-700">{{ i18n.packagePath.label }}</label>
+                    <input type="text" v-model="packagePath" :placeholder="i18n.packagePath.placeholder"
+                           class="w-full rounded-lg border-gray-300 shadow-sm focus:border-primary focus:ring-primary">
+                </div>
+
+                <!-- API名称输入 -->
+                <div class="space-y-4">
+                    <label class="block text-sm font-medium text-gray-700">{{ i18n.apiName.label }}</label>
+                    <input type="text" v-model="apiName" :placeholder="i18n.apiName.placeholder"
+                           class="w-full rounded-lg border-gray-300 shadow-sm focus:border-primary focus:ring-primary">
+                </div>
+
+                <!-- 生成代码按钮 -->
+                <div class="flex justify-center">
+                    <button @click="generateCode"
+                            class="px-8 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors duration-200 text-lg font-medium">
+                        {{ i18n.buttons.generate }}
+                    </button>
+                </div>
+
+                <!-- 生成结果 -->
+                <div v-if="generatedCode" class="space-y-4 p-6 bg-gray-50 rounded-lg border border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900">{{ i18n.preview.title }}</h3>
+                    <pre class="bg-white p-4 rounded-lg overflow-x-auto font-mono text-sm">{{ generatedCode }}</pre>
+                    <button @click="downloadCode"
+                            class="px-6 py-2 bg-success text-white rounded-lg hover:bg-success/90 transition-colors duration-200">
+                        {{ i18n.buttons.download }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                apiUrl: '',
+                cookie: '',
+                requestData: '',
+                packagePath: 'com.open.mcp.server.api',
+                apiName: '',
+                generatedCode: '',
+                currentLang: 'zh',
+                i18n: zh,
+                testResult: null,
+                method: 'GET'
+            },
+            methods: {
+                setLanguage(lang) {
+                    this.currentLang = lang;
+                    this.i18n = lang === 'zh' ? zh : en;
+                    // 设置后端语言
+                    fetch('/api/setLanguage', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ language: lang })
+                    });
+                },
+                generateCode() {
+                    const requestBody = {
+                        apiUrl: this.apiUrl,
+                        cookie: this.cookie,
+                        requestData: this.requestData,
+                        packagePath: this.packagePath,
+                        apiName: this.apiName,
+                        responseData: this.testResult
+                    };
+
+                    fetch('/api/generate', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept-Language': this.currentLang
+                        },
+                        body: JSON.stringify(requestBody)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        this.generatedCode = data.code;
+                    })
+                    .catch(error => {
+                        alert(this.i18n.errors.generateFailed + error);
+                    });
+                },
+                async downloadCode() {
+                    try {
+                        const response = await fetch('/api/download', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                apiUrl: this.apiUrl,
+                                cookie: this.cookie,
+                                requestData: this.requestData,
+                                packagePath: this.packagePath,
+                                apiName: this.apiName,
+                                responseData: this.testResult
+                            })
+                        });
+
+                        const contentType = response.headers.get('content-type');
+                        
+                        if (contentType && contentType.includes('application/json')) {
+                            const data = await response.json();
+                            if (!data.success) {
+                                alert(data.message || '生成代码失败');
+                                return;
+                            }
+                        } else {
+                            const blob = await response.blob();
+                            const url = window.URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = `${this.apiName}.zip`;
+                            document.body.appendChild(a);
+                            a.click();
+                            window.URL.revokeObjectURL(url);
+                            document.body.removeChild(a);
+                        }
+                    } catch (error) {
+                        console.error('下载失败:', error);
+                        alert('下载失败: ' + error.message);
+                    }
+                },
+                formatJson(field) {
+                    try {
+                        const jsonData = JSON.parse(this[field]);
+                        this[field] = JSON.stringify(jsonData, null, 2);
+                    } catch (e) {
+                        alert(this.i18n.errors.invalidJson);
+                    }
+                },
+                testApi() {
+                    if (!this.apiUrl) {
+                        alert(this.i18n.errors.apiUrlRequired);
+                        return;
+                    }
+
+                    const requestBody = {
+                        apiUrl: this.apiUrl,
+                        cookie: this.cookie,
+                        requestData: this.requestData,
+                        method: this.method
+                    };
+
+                    fetch('/api/test', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept-Language': this.currentLang
+                        },
+                        body: JSON.stringify(requestBody)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        this.testResult = JSON.stringify(data, null, 2);
+                    })
+                    .catch(error => {
+                        alert(this.i18n.errors.testFailed + error);
+                    });
+                },
+                useTestResult() {
+                    if (!this.testResult) {
+                        alert(this.i18n.errors.noTestResult);
+                        return;
+                    }
+
+                    const requestBody = {
+                        apiUrl: this.apiUrl,
+                        cookie: this.cookie,
+                        requestData: this.requestData,
+                        packagePath: this.packagePath,
+                        apiName: this.apiName,
+                        responseData: this.testResult
+                    };
+
+                    fetch('/api/generate', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept-Language': this.currentLang
+                        },
+                        body: JSON.stringify(requestBody)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        this.generatedCode = data.code;
+                    })
+                    .catch(error => {
+                        alert(this.i18n.errors.generateFailed + error);
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html> 
